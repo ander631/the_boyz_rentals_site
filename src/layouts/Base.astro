@@ -1,0 +1,81 @@
+---
+import '../styles/global.css';
+import { site, abs } from '../data/site';
+import InfoBar from '../components/InfoBar.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** canonical path, e.g. "/skid-steer-rental/". Defaults to current URL. */
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  navActive?: string;
+  /** absolute or root-relative image to preload (hero LCP element) */
+  preloadImage?: string;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage = '/assets/og-default.jpg',
+  noindex = false,
+  jsonLd,
+  navActive = Astro.url.pathname,
+  preloadImage,
+} = Astro.props;
+
+const canonicalUrl = abs(canonical ?? Astro.url.pathname);
+const ogImageUrl = abs(ogImage);
+const robots = noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {/* Strict <head> order (Section 7): only valid head elements; no stray
+      <img>/<iframe> before metadata or Google stops parsing. */}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  {preloadImage && <link rel="preload" as="image" href={preloadImage} />}
+
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta name="robots" content={robots} />
+
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:site_name" content={site.name} />
+
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon-180.png" />
+
+  <!-- Fonts: preconnect above + display=swap here (Section 3 / CWV). -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
+    rel="stylesheet"
+  />
+
+  {jsonLd && <JsonLd data={jsonLd} />}
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <InfoBar />
+  <Nav active={navActive} />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+</body>
+</html>
