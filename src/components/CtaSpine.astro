@@ -1,0 +1,39 @@
+---
+import { site } from '../data/site';
+// End-of-page conversion band. Primary = booking POS (the money action,
+// Section 9). Secondary = click-to-call. `callPrimary` flips emphasis for
+// hauling pages where calling is the primary action.
+interface Props {
+  heading?: string;
+  sub?: string;
+  callPrimary?: boolean;
+  primaryLabel?: string;
+}
+const {
+  heading = 'Ready to get the gear?',
+  sub = 'Reserve online in about two minutes, or call and talk to a real person. We deliver across Denver and the Front Range.',
+  callPrimary = false,
+  primaryLabel = 'See Availability & Pricing',
+} = Astro.props;
+---
+<section class="sec"><div class="wrap">
+  <div class="ctaband">
+    <div>
+      <h2>{heading}</h2>
+      <p>{sub}</p>
+    </div>
+    <div class="fx ac gap14 fwrap">
+      {callPrimary ? (
+        <>
+          <a class="btn btn-red btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+          <a class="btn btn-ghost btn-lg" href={site.booking}>{primaryLabel} →</a>
+        </>
+      ) : (
+        <>
+          <a class="btn btn-red btn-lg" href={site.booking}>{primaryLabel} →</a>
+          <a class="btn btn-ghost btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+        </>
+      )}
+    </div>
+  </div>
+</div></section>

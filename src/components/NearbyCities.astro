@@ -1,0 +1,16 @@
+---
+// Geographic cross-linking widget (Section 7 internal-linking).
+// Pass resolved links so the component stays presentational.
+interface Props { links: { name: string; href: string }[]; heading?: string; }
+const { links, heading = 'Nearby cities we serve' } = Astro.props;
+---
+{links.length > 0 && (
+  <div>
+    <div class="seoh3" style="margin-top:0">{heading}</div>
+    <div class="nearby">
+      {links.map((l) => (
+        <a class="citychip" href={l.href}>{l.name}</a>
+      ))}
+    </div>
+  </div>
+)}

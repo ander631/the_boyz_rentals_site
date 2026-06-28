@@ -1,0 +1,29 @@
+---
+import { site, primaryNav } from '../data/site';
+// active: pathname of current page, used to mark the matching link.
+const { active = '' } = Astro.props as { active?: string };
+const isOn = (href: string) =>
+  href !== '/#service-area' && active.startsWith(href.replace(/#.*$/, '')) && href !== '/';
+---
+<div class="navbar"><nav class="wrap navinner" aria-label="Primary">
+  <a class="navlogo" href="/">
+    <span class="logo-chip" style="height:40px;width:40px">
+      <img src="/assets/tbz-logo.webp" width="36" height="36" style="height:36px;width:36px" alt="" aria-hidden="true" />
+    </span>
+    <span class="nm">The Boyz</span>
+  </a>
+
+  <input type="checkbox" id="navtoggle" class="navtoggle vh" aria-hidden="true" />
+  <label class="hamb" for="navtoggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </label>
+
+  <div class="navlinks">
+    {primaryNav.map((n) => (
+      <a class={`bnav${isOn(n.href) ? ' on' : ''}`} href={n.href}>{n.label}</a>
+    ))}
+    <span class="navdiv" aria-hidden="true"></span>
+    <a class="tel" href={site.phoneHref} style="font-size:20px">{site.phone}</a>
+    <a class="btn btn-red" href={site.booking} style="font-size:15px;padding:12px 22px">Book Now →</a>
+  </div>
+</nav></div>

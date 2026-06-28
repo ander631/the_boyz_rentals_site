@@ -1,0 +1,18 @@
+---
+// Visible breadcrumb (paired with BreadcrumbList schema emitted by the page).
+// Last item = current page (no link, aria-current).
+interface Props { items: { name: string; path: string }[]; }
+const { items } = Astro.props;
+---
+<nav aria-label="Breadcrumb">
+  <ol class="crumbs">
+    {items.map((it, i) => (
+      <li>
+        {i < items.length - 1
+          ? <a href={it.path}>{it.name}</a>
+          : <span aria-current="page">{it.name}</span>}
+        {i < items.length - 1 && <span class="crumbsep" aria-hidden="true">›</span>}
+      </li>
+    ))}
+  </ol>
+</nav>

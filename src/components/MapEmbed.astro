@@ -1,0 +1,15 @@
+---
+/* Google Maps embed container (scaffold).
+   TODO(owner): in Google Maps, find your business → Share → Embed a map →
+   copy the <iframe>, and paste it in place of the placeholder below
+   (keep it inside .mapembed). Add loading="lazy" to the iframe. */
+interface Props { label?: string; }
+const { label = 'Our service area' } = Astro.props;
+---
+<div class="mapembed">
+  {/* PASTE GOOGLE MAPS <iframe ...> HERE */}
+  <div class="mapembed-ph">
+    <span>{label}</span>
+    <small>Google Map embeds here</small>
+  </div>
+</div>

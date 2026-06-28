@@ -1,0 +1,9 @@
+---
+// Visible, static-HTML direct-answer block (Section 6). Sits right
+// after the H1 on every money page. Never hidden in a tab/accordion.
+const { label = 'The short answer' } = Astro.props as { label?: string };
+---
+<div class="answer">
+  <p class="lbl">{label}</p>
+  <p><slot /></p>
+</div>

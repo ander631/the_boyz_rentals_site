@@ -1,0 +1,11 @@
+---
+// Renders one or more JSON-LD blocks. Escapes "<" so a stray
+// </script> in any string value can't break out of the tag.
+interface Props { data: Record<string, unknown> | Record<string, unknown>[]; }
+const { data } = Astro.props;
+const blocks = Array.isArray(data) ? data : [data];
+const enc = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, '\\u003c');
+---
+{blocks.map((b) => (
+  <script type="application/ld+json" set:html={enc(b)} />
+))}

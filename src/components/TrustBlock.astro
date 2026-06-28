@@ -1,0 +1,20 @@
+---
+import { differentiators } from '../data/site';
+// "Why The Boyz" trust block. Defaults to the three core differentiators
+// (firefighter owned, we deliver, discounts); pass `keys` to pick others.
+interface Props { keys?: number[]; heading?: string; }
+const { keys = [0, 1, 4], heading = 'Why The Boyz' } = Astro.props;
+const items = keys.map((i) => differentiators[i]).filter(Boolean);
+---
+<div>
+  <div class="kick">{heading}</div>
+  <h2 class="h2" style="margin-bottom:30px">Firefighter owned. Delivered. Done right.</h2>
+  <div class="trustgrid">
+    {items.map((d) => (
+      <div class="trustcard">
+        <h3>{d.title}</h3>
+        <p>{d.body}</p>
+      </div>
+    ))}
+  </div>
+</div>

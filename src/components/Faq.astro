@@ -1,0 +1,16 @@
+---
+import { resolveLinks } from '../lib/links';
+// Visible FAQ block. The page is responsible for emitting matching
+// FAQPage JSON-LD (via lib/schema faqPage) so schema == visible text.
+interface Props { faqs: { q: string; a: string }[]; heading?: string; }
+const { faqs, heading } = Astro.props;
+---
+<div class="faq">
+  {heading && <h2 class="h2" style="font-size:32px;margin-bottom:18px">{heading}</h2>}
+  {faqs.map((f) => (
+    <div class="faqitem">
+      <h3 class="faqq">{f.q}</h3>
+      <p class="faqa" set:html={resolveLinks(f.a)} />
+    </div>
+  ))}
+</div>

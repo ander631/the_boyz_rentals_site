@@ -1,0 +1,18 @@
+---
+/* Elfsight Google Reviews widget container (scaffold).
+   TODO(owner): 1) Build a Google Reviews widget at https://elfsight.com
+   2) Replace WIDGET_ID below with your Elfsight app id
+   3) Uncomment the platform script line.
+   The real reviews + star ratings then render here. The visible
+   AggregateRating header (5.0 / 86) and schema stay as-is. */
+---
+<div class="reviewswidget">
+  <div class="elfsight-app-WIDGET_ID" data-elfsight-app-lazy></div>
+  <!-- <script src="https://static.elfsight.com/platform/platform.js" async></script> -->
+  <div class="reviewsfallback">
+    <span>★★★★★</span>
+    <p>Live Google reviews load here once the Elfsight widget is connected.</p>
+    <!-- TODO(owner): link your Google Business Profile reviews URL -->
+    <a class="btn btn-dark" href="#">Read our reviews on Google →</a>
+  </div>
+</div>

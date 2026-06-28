@@ -1,0 +1,32 @@
+---
+import { site } from '../data/site';
+---
+<div class="infobar"><div class="wrap hgrid">
+  <div class="col" style="justify-content:center;gap:13px">
+    <div class="fx ac gap10 fwrap">
+      <span class="os" style="font-size:27px;font-weight:700;color:#fff;line-height:1">{site.reviews.rating}</span>
+      <span class="stars" style="font-size:22px" aria-hidden="true">★★★★★</span>
+      <a class="revlink" href="/reviews/">({site.reviews.count}+ Google Reviews)</a>
+    </div>
+    <div class="servline">Serving the Entire Front Range,<br>Wheat Ridge &amp; the Denver Metro</div>
+  </div>
+
+  <div class="col ac" style="gap:9px">
+    <div class="fx ac gap14">
+      <div class="logo-chip" style="height:80px;width:80px">
+        <img src="/assets/tbz-logo.webp" width="76" height="76" style="height:76px;width:76px" alt="The Boyz Rentals & Towing logo" />
+      </div>
+      <div class="wordmark">
+        <div class="t1">The Boyz</div>
+        <div class="t2">Rentals &amp; Towing</div>
+      </div>
+    </div>
+    <div class="tagline">&ldquo;You Call. We Haul&rdquo;</div>
+  </div>
+
+  <div class="col" style="align-items:flex-end;justify-content:center;gap:11px">
+    <a class="btn btn-dark" href={site.booking} style="font-size:18px;padding:15px 30px">Book Now →</a>
+    <a class="tel" href={site.phoneHref} style="color:#fff;font-size:31px">{site.phone}</a>
+    <a class="emaillink" href={`mailto:${site.email}`}>{site.email}</a>
+  </div>
+</div></div>

@@ -1,0 +1,76 @@
+---
+import { site, footerCompany, footerRentals } from '../data/site';
+import { serviceAreaCities } from '../data/cities';
+const year = 2026; // static brochure; bump on yearly review (don't fake freshness)
+---
+<footer class="footer">
+  <div class="wrap" style="padding:64px 40px 44px">
+    <div class="grid" style="grid-template-columns:1.55fr 1fr 1fr 1.6fr;gap:42px">
+
+      <div>
+        <div class="fx ac gap14">
+          <div class="flogo"><img src="/assets/tbz-logo.webp" width="62" height="62" alt="The Boyz Rentals & Towing logo" /></div>
+          <div class="fwm">
+            <div style="font-size:25px;color:#fff">The Boyz</div>
+            <div style="font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.8);font-weight:600">Rentals &amp; Towing</div>
+          </div>
+        </div>
+        <p class="fmeta" style="margin:18px 0 0;max-width:330px">
+          Firefighter founded, owned, and operated. Trailer &amp; equipment rental and load
+          hauling across Denver and the Front Range. We aren&rsquo;t in this to get rich &mdash;
+          we&rsquo;re in this to serve you.
+        </p>
+        <div class="fx ac gap14 fwrap" style="margin-top:22px">
+          <a class="btn btn-dark" href={site.booking}>Book Now →</a>
+          <a class="tel" href={site.phoneHref} style="font-size:26px">{site.phone}</a>
+        </div>
+      </div>
+
+      <nav class="fcol" aria-label="Rentals">
+        <div class="fhead">Rentals</div>
+        {footerRentals.map((l) => <a class="flink" href={l.href}>{l.label}</a>)}
+      </nav>
+
+      <nav class="fcol" aria-label="Company">
+        <div class="fhead">Company</div>
+        {footerCompany.map((l) => <a class="flink" href={l.href}>{l.label}</a>)}
+      </nav>
+
+      <div>
+        <div class="fhead">Seasonal deals</div>
+        <p class="fmeta" style="margin:0 0 12px">Enter your email for our seasonal deals. I promise I won&rsquo;t fill your inbox.</p>
+        <!-- TODO(owner, Section 9/13 #8): confirm host + endpoint. Wired for
+             Netlify Forms (data-netlify). If not on Netlify, point action= to
+             Formspree (e.g. https://formspree.io/f/XXXX) and remove data-netlify.
+             Submissions should route to morgan@tbzrentals.com. -->
+        <form name="email-signup" method="POST" data-netlify="true" action="/contact/?signup=ok" class="fx gap10 fwrap" style="max-width:380px">
+          <input type="hidden" name="form-name" value="email-signup" />
+          <label class="vh" for="footer-email">Email address</label>
+          <input class="einput" id="footer-email" type="email" name="email" placeholder="you@email.com" required style="flex:1;min-width:180px" />
+          <button class="btn btn-dark" type="submit" style="white-space:nowrap">Sign Up</button>
+        </form>
+
+        <div class="fmeta" style="margin-top:22px">
+          <div class="fx ac gap8"><span class="cross" style="width:14px;height:14px;background:#fff" aria-hidden="true"></span><b style="color:#fff">{site.address.street}, {site.address.city}, {site.address.region}</b></div>
+          <div style="margin-top:6px">{site.hoursText}</div>
+          <a class="flink" href={`mailto:${site.email}`} style="text-decoration:underline">{site.email}</a>
+        </div>
+        <div class="fx ac gap10" style="margin-top:18px">
+          <!-- TODO(owner): real social profile URLs -->
+          <a class="soc" href="#" aria-label="Facebook">f</a>
+          <a class="soc" href="#" aria-label="Instagram">IG</a>
+          <a class="soc" href="#" aria-label="Google Business Profile">G</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footbar"><div class="wrap fx ac jb fwrap" style="padding:18px 40px;gap:12px">
+    <div class="fmeta" style="font-size:13px">© {year} {site.legalName} · {site.address.city}, {site.address.region}</div>
+    <div class="fx ac gap16 fwrap">
+      <span class="os" style="font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.5px">Firefighter Owned &amp; Operated</span>
+      <a class="flink" href="#" style="font-size:13px">Privacy</a>
+      <a class="flink" href="#" style="font-size:13px">Terms</a>
+    </div>
+  </div></div>
+</footer>
