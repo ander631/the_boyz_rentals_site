@@ -1,0 +1,93 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../PageHero.astro';
+import DirectAnswer from '../DirectAnswer.astro';
+import Faq from '../Faq.astro';
+import TrustBlock from '../TrustBlock.astro';
+import CtaSpine from '../CtaSpine.astro';
+import { site } from '../../data/site';
+import type { Equipment } from '../../data/equipment';
+import { categoryBySlug } from '../../data/equipment';
+import { cities } from '../../data/cities';
+import { service, breadcrumb, faqPage } from '../../lib/schema';
+
+interface Props { equipment: Equipment; }
+const { equipment: e } = Astro.props;
+
+const cat = categoryBySlug[e.categorySlug];
+const path = `/${e.slug}-rental/`;
+const h1 = `${e.name} Rental in Denver, CO`;
+const title = `${e.name} Rental in Denver, CO | The Boyz Rentals`;
+const description = `Rent a ${e.name.toLowerCase()} in Denver, CO from The Boyz — firefighter-owned and delivered to your site. Honest pricing. Reserve online or call (303) 900-8228.`;
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: cat.name, path: `/${cat.slug}/` },
+  { name: `${e.name} Rental`, path },
+];
+
+const jsonLd = [
+  service({ serviceType: e.serviceType, url: path }),
+  breadcrumb(crumbs),
+  faqPage(e.faqs),
+];
+---
+<Base title={title} description={description} canonical={path} navActive={`/${cat.slug}/`} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow={`${cat.name} · Denver & the Front Range`}
+    h1={h1}
+    sub={e.blurb}
+    crumbs={crumbs}
+  >
+    <div slot="cta" class="fx ac gap14 fwrap" style="margin-top:26px">
+      <a class="btn btn-red btn-lg" href={site.booking}>See Inventory & Pricing →</a>
+      <a class="btn btn-ghost btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+    </div>
+  </PageHero>
+
+  <section class="sec"><div class="wrap prose">
+    <DirectAnswer label={`What is a ${e.name.toLowerCase()} rental?`}>
+      {e.whatItIs} <b>Who needs one:</b> {e.whoNeedsIt}
+    </DirectAnswer>
+
+    <h2 class="seoh3" style="margin-top:40px">{e.sizingTitle}</h2>
+    {e.sizing.map((p) => <p class="seop">{p}</p>)}
+
+    <h2 class="seoh3">What people rent a {e.name.toLowerCase()} for</h2>
+    <ul class="featlist">
+      {e.useCases.map((u) => (
+        <li><span class="cross mk" aria-hidden="true"></span><span>{u}</span></li>
+      ))}
+    </ul>
+
+    <h2 class="seoh3">Delivery, pickup &amp; pricing</h2>
+    <p class="seop">{e.deliveryNote}</p>
+    <p class="seop">{e.costAnswer}</p>
+  </div></section>
+
+  <!-- Available in these cities — links to the 8 matrix pages for this machine -->
+  <section class="sec secpaper"><div class="wrap">
+    <div class="kick">{e.name} Rental Near You</div>
+    <h2 class="h2" style="margin-bottom:24px">Available in these Front Range cities</h2>
+    <div class="arealist">
+      {cities.map((c) => (
+        <a class="arealink" href={`/${e.slug}-rental-${c.slug}/`}>
+          <span class="dot" aria-hidden="true"></span>{e.name} Rental in {c.name}
+        </a>
+      ))}
+    </div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <Faq faqs={e.faqs} heading={`${e.name} rental FAQs`} />
+  </div></section>
+
+  <section class="sec secpaper"><div class="wrap">
+    <TrustBlock />
+  </div></section>
+
+  <CtaSpine
+    heading={`Need a ${e.name.toLowerCase()} in Denver?`}
+    sub="Reserve online in about two minutes, or call and talk to a real person. We deliver across Denver and the Front Range."
+  />
+</Base>

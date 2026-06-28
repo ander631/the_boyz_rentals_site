@@ -1,0 +1,91 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../PageHero.astro';
+import DirectAnswer from '../DirectAnswer.astro';
+import Faq from '../Faq.astro';
+import TrustBlock from '../TrustBlock.astro';
+import CtaSpine from '../CtaSpine.astro';
+import { site } from '../../data/site';
+import { hauling } from '../../data/services';
+import { cities } from '../../data/cities';
+import { service, breadcrumb, faqPage } from '../../lib/schema';
+
+const path = '/hauling-and-delivery/';
+const title = 'Equipment Hauling & Delivery in Denver, CO | The Boyz Rentals';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Hauling & Delivery', path },
+];
+const jsonLd = [
+  service({ serviceType: hauling.serviceType, url: path }),
+  breadcrumb(crumbs),
+  faqPage(hauling.faqs),
+];
+---
+<Base title={title} description={hauling.metaDesc} canonical={path} navActive={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Denver & the Front Range"
+    h1={hauling.h1}
+    sub="If it needs moving, we move it. You call, we haul."
+    crumbs={crumbs}
+  >
+    <div slot="cta" class="fx ac gap14 fwrap" style="margin-top:26px">
+      <a class="btn btn-red btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+      <a class="btn btn-ghost btn-lg" href={site.booking}>See Rentals & Pricing →</a>
+    </div>
+  </PageHero>
+
+  <section class="sec"><div class="wrap prose">
+    <DirectAnswer label="Hauling & delivery in Denver, CO">
+      {hauling.directAnswer}
+    </DirectAnswer>
+
+    <h2 class="seoh3" style="margin-top:40px">What we haul &amp; deliver</h2>
+    <ul class="featlist">
+      {hauling.whatWeHaul.map((w) => (
+        <li><span class="cross mk" aria-hidden="true"></span><span>{w}</span></li>
+      ))}
+    </ul>
+  </div></section>
+
+  <section class="sec secpaper"><div class="wrap">
+    <div class="kick">How it works</div>
+    <h2 class="h2" style="margin-bottom:28px">Three steps and it&rsquo;s handled</h2>
+    <div class="cardgrid">
+      {hauling.how.map((s, i) => (
+        <div class="trustcard">
+          <div class="spname" style="font-size:34px;color:var(--red)">{String(i + 1).padStart(2, '0')}</div>
+          <h3 style="margin-top:8px">{s.h}</h3>
+          <p>{s.p}</p>
+        </div>
+      ))}
+    </div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <TrustBlock keys={[0, 2, 3]} heading="Why call The Boyz to haul it" />
+  </div></section>
+
+  <section class="sec secpaper"><div class="wrap">
+    <div class="kick">Service Area</div>
+    <h2 class="h2" style="margin-bottom:24px">We haul across the Denver metro</h2>
+    <div class="arealist">
+      {cities.map((city) => (
+        <a class="arealink" href={`/equipment-rental-${city.slug}/`}>
+          <span class="dot" aria-hidden="true"></span>Serving {city.name}, CO
+        </a>
+      ))}
+    </div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <Faq faqs={hauling.faqs} heading="Hauling & delivery FAQs" />
+  </div></section>
+
+  <CtaSpine
+    heading="Got something that needs moving?"
+    sub="For hauling, the fastest path is a quick call — tell us the load and where it's going and we'll give you an honest quote."
+    callPrimary={true}
+    primaryLabel="See Rentals & Pricing"
+  />
+</Base>

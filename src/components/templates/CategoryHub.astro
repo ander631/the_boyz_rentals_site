@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../PageHero.astro';
+import DirectAnswer from '../DirectAnswer.astro';
+import Faq from '../Faq.astro';
+import TrustBlock from '../TrustBlock.astro';
+import CtaSpine from '../CtaSpine.astro';
+import { site } from '../../data/site';
+import { equipmentBySlug, type Category } from '../../data/equipment';
+import { cities } from '../../data/cities';
+import { categoryFaqs } from '../../data/services';
+import { service, breadcrumb, faqPage } from '../../lib/schema';
+
+interface Props { category: Category; }
+const { category: c } = Astro.props;
+
+const path = `/${c.slug}/`;
+const title = `${c.name} in Denver, CO | The Boyz Rentals`;
+const description = `${c.name} in Denver, CO from The Boyz — firefighter-owned, delivered to your site. ${c.blurb} Honest pricing. Reserve online or call (303) 900-8228.`;
+const members = c.members.map((s) => equipmentBySlug[s]);
+const faqs = categoryFaqs[c.slug] ?? [];
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: c.name, path },
+];
+
+const jsonLd = [
+  service({ serviceType: c.name, url: path }),
+  breadcrumb(crumbs),
+  ...(faqs.length ? [faqPage(faqs)] : []),
+];
+---
+<Base title={title} description={description} canonical={path} navActive={path} jsonLd={jsonLd}>
+  <PageHero eyebrow="Denver & the Front Range" h1={c.h1} sub={c.blurb} crumbs={crumbs}>
+    <div slot="cta" class="fx ac gap14 fwrap" style="margin-top:26px">
+      <a class="btn btn-red btn-lg" href={site.booking}>See Inventory & Pricing →</a>
+      <a class="btn btn-ghost btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+    </div>
+  </PageHero>
+
+  <section class="sec"><div class="wrap prose">
+    <DirectAnswer label={`${c.name} in Denver, CO`}>
+      {c.intro}
+    </DirectAnswer>
+  </div></section>
+
+  <!-- Grid → every equipment-type page in this category -->
+  <section class="sec secpaper"><div class="wrap">
+    <div class="kick">What we rent</div>
+    <h2 class="h2" style="margin-bottom:28px">Pick your machine</h2>
+    <div class="cardgrid">
+      {members.map((m) => (
+        <a class="lcard" href={`/${m.slug}-rental/`}>
+          <h3 class="lc-name">{m.name}</h3>
+          <p class="lc-desc">{m.blurb}</p>
+          <span class="lc-go">{m.name} Rental →</span>
+        </a>
+      ))}
+    </div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <TrustBlock />
+  </div></section>
+
+  <!-- Service-area links → all 8 city hubs -->
+  <section class="sec secpaper"><div class="wrap">
+    <div class="kick">Service Area</div>
+    <h2 class="h2" style="margin-bottom:24px">{c.name} across the Denver metro</h2>
+    <div class="arealist">
+      {cities.map((city) => (
+        <a class="arealink" href={`/equipment-rental-${city.slug}/`}>
+          <span class="dot" aria-hidden="true"></span>Rentals in {city.name}, CO
+        </a>
+      ))}
+    </div>
+  </div></section>
+
+  {faqs.length > 0 && (
+    <section class="sec"><div class="wrap">
+      <Faq faqs={faqs} heading={`${c.name} FAQs`} />
+    </div></section>
+  )}
+
+  <CtaSpine
+    heading={`Need ${c.name.toLowerCase()} in Denver?`}
+    sub="Reserve online in about two minutes, or call and talk to a real person. We deliver across Denver and the Front Range."
+  />
+</Base>

@@ -1,0 +1,84 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../PageHero.astro';
+import DirectAnswer from '../DirectAnswer.astro';
+import TrustBlock from '../TrustBlock.astro';
+import CtaSpine from '../CtaSpine.astro';
+import type { City } from '../../data/cities';
+import { equipment } from '../../data/equipment';
+import { service, breadcrumb } from '../../lib/schema';
+
+interface Props { city: City; }
+const { city } = Astro.props;
+
+const path = `/equipment-rental-${city.slug}/`;
+const h1 = `Equipment & Trailer Rental in ${city.name}, CO`;
+const title = `Equipment & Trailer Rental in ${city.name}, CO | The Boyz`;
+const description = `Equipment & trailer rental and hauling in ${city.name}, CO. Firefighter-owned, delivered to your site. Skid steers, excavators, dump trailers & more. Call (303) 900-8228.`;
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: `${city.name}, CO`, path },
+];
+
+// City Q&A answers are woven into prose here (no separate FAQ section).
+// Strip the conversational "Yes —" lead so they read as statements.
+const localNotes = city.localFaqs.map((f) =>
+  f.a.replace(/^Yes[\s,.;:—-]+/i, (m) => '').replace(/^./, (c) => c.toUpperCase()),
+);
+
+// No visible FAQ block on city pages, so no FAQPage schema (schema == visible).
+const jsonLd = [
+  service({ serviceType: 'Equipment & Trailer Rental', url: path, areaCitySlug: city.slug }),
+  breadcrumb(crumbs),
+];
+
+const jobsSentence = city.jobs.slice(0, -1).join(', ') + ', and ' + city.jobs[city.jobs.length - 1];
+---
+<Base title={title} description={description} canonical={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow={`${city.name}, CO · The Boyz Rentals & Towing`}
+    h1={h1}
+    sub={city.blurb}
+    crumbs={crumbs}
+  />
+
+  <section class="sec"><div class="wrap prose">
+    <DirectAnswer label={`Renting in ${city.name}, CO`}>
+      <b>Yes — we rent and deliver trailers and equipment across {city.name}, CO, and we haul
+      whatever needs moving.</b> The Boyz Rentals &amp; Towing serves all of {city.name}, including
+      {city.neighborhoods.slice(0, 3).join(', ')}. Firefighter owned, honest pricing, and we bring
+      the gear to you. Common {city.name} jobs: {jobsSentence}.
+    </DirectAnswer>
+
+    <h2 class="seoh3" style="margin-top:40px">Working in {city.name}</h2>
+    <p class="seop">{city.terrain}</p>
+    <p class="seop">{city.soil}</p>
+    <p class="seop">{city.deliveryNote} {city.accessNote}</p>
+    {localNotes.map((n) => <p class="seop">{n}</p>)}
+  </div></section>
+
+  <!-- All machines, linked to this city's matrix pages -->
+  <section class="sec secpaper"><div class="wrap">
+    <div class="kick">What we rent in {city.name}</div>
+    <h2 class="h2" style="margin-bottom:28px">Equipment &amp; trailers, delivered in {city.name}</h2>
+    <div class="cardgrid">
+      {equipment.map((e) => (
+        <a class="lcard" href={`/${e.slug}-rental-${city.slug}/`}>
+          <h3 class="lc-name">{e.name} Rental</h3>
+          <p class="lc-desc">{e.blurb}</p>
+          <span class="lc-go">{e.name} Rental in {city.name} →</span>
+        </a>
+      ))}
+    </div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <TrustBlock />
+  </div></section>
+
+  <CtaSpine
+    heading={`Need gear delivered in ${city.name}?`}
+    sub={`Reserve online in about two minutes, or call and talk to a real person. We deliver across ${city.name} and the Front Range.`}
+  />
+</Base>

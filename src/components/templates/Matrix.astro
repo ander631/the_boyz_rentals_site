@@ -1,0 +1,116 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../PageHero.astro';
+import DirectAnswer from '../DirectAnswer.astro';
+import Faq from '../Faq.astro';
+import CtaSpine from '../CtaSpine.astro';
+import NearbyCities from '../NearbyCities.astro';
+import type { Equipment } from '../../data/equipment';
+import type { City } from '../../data/cities';
+import { cityBySlug } from '../../data/cities';
+import { categoryBySlug } from '../../data/equipment';
+import { site } from '../../data/site';
+import { service, breadcrumb, faqPage } from '../../lib/schema';
+
+interface Props { equipment: Equipment; city: City; }
+const { equipment: e, city } = Astro.props;
+
+const path = `/${e.slug}-rental-${city.slug}/`;
+const lname = e.name.toLowerCase();
+const h1 = `${e.name} Rental in ${city.name}, CO`;
+const title = `${e.name} Rental in ${city.name}, CO | The Boyz`;
+const description = `${e.name} rental in ${city.name}, CO from The Boyz — firefighter-owned, delivered to your site. Honest pricing. Reserve online or call (303) 900-8228.`;
+
+const cat = categoryBySlug[e.categorySlug];
+const isDigger = e.category === 'equipment';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: `${e.name} Rental`, path: `/${e.slug}-rental/` },
+  { name: `${city.name}, CO`, path },
+];
+
+// Composed city+machine FAQ (page-specific) + a few machine FAQs + a city FAQ.
+// Same array feeds visible <Faq> and FAQPage schema, so they match exactly.
+const cityMachineFaqs = [
+  {
+    q: `Can you deliver a ${lname} in ${city.name}?`,
+    a: `Yes. ${city.deliveryNote} We bring the ${lname} to your ${city.name} site and pick it up when you're done.`,
+  },
+  ...e.faqs.slice(0, 3),
+  city.localFaqs[0],
+].filter(Boolean);
+
+const jsonLd = [
+  service({ serviceType: e.serviceType, url: path, areaCitySlug: city.slug }),
+  breadcrumb(crumbs),
+  faqPage(cityMachineFaqs),
+];
+
+const nearbyLinks = city.nearby
+  .map((s) => cityBySlug[s])
+  .filter(Boolean)
+  .map((c) => ({ name: `${e.name} Rental in ${c.name}`, href: `/${e.slug}-rental-${c.slug}/` }));
+---
+<Base title={title} description={description} canonical={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow={`${city.name}, CO · ${cat.name}`}
+    h1={h1}
+    sub={`${e.blurb} Delivered across ${city.name} and the Front Range.`}
+    crumbs={crumbs}
+  />
+
+  <section class="sec"><div class="wrap prose">
+    <DirectAnswer label={`${e.name} rental in ${city.name}`}>
+      Need a {lname} in {city.name}, CO? The Boyz Rentals &amp; Towing rents and delivers them
+      across {city.name}, including {city.neighborhoods.slice(0, 2).join(' and ')}. {e.whatItIs}
+    </DirectAnswer>
+
+    <h2 class="seoh3" style="margin-top:40px">Renting a {lname} in {city.name}</h2>
+    <p class="seop">{city.terrain}</p>
+
+    {isDigger ? (
+      <>
+        <p class="seop"><b>Soil matters here.</b> {city.soil} {e.nugget}</p>
+        <p class="seop">
+          Before any digging in {city.name}, call 811 to get utilities marked. Tell us your dig
+          depth and the ground you're in and we'll match a {lname} with the right size and breakout
+          force for the job.
+        </p>
+      </>
+    ) : (
+      <>
+        <p class="seop"><b>Hauling in and out of {city.name}.</b> {e.nugget} We'll confirm exactly
+          what your truck needs &mdash; the right hitch, ball, and brake controller &mdash; so you
+          leave legal and safe.</p>
+        <p class="seop">No truck rated to tow it? {city.deliveryNote}</p>
+      </>
+    )}
+
+    <h2 class="seoh3">What {city.name} customers use a {lname} for</h2>
+    <ul class="featlist">
+      {e.useCases.map((u) => (
+        <li><span class="cross mk" aria-hidden="true"></span><span>{u}</span></li>
+      ))}
+    </ul>
+
+    <h2 class="seoh3">Delivery &amp; pricing in {city.name}</h2>
+    <p class="seop">{e.costAnswer}</p>
+    <p class="seop">
+      See more on the <a href={`/${e.slug}-rental/`}>{e.name.toLowerCase()} rental page</a>, or
+      browse <a href={`/equipment-rental-${city.slug}/`}>all rentals in {city.name}</a>.
+    </p>
+  </div></section>
+
+  <section class="sec secpaper"><div class="wrap">
+    <Faq faqs={cityMachineFaqs} heading={`${e.name} rental in ${city.name} — FAQs`} />
+    <div style="margin-top:38px">
+      <NearbyCities links={nearbyLinks} heading={`${e.name} rental in nearby cities`} />
+    </div>
+  </div></section>
+
+  <CtaSpine
+    heading={`Reserve a ${lname} in ${city.name}`}
+    sub={`Check live availability and pricing online, or call ${site.phone}. We deliver across ${city.name} and the Front Range.`}
+  />
+</Base>
