@@ -1,0 +1,47 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSpine from '../../components/CtaSpine.astro';
+import { getCollection } from 'astro:content';
+import { breadcrumb } from '../../lib/schema';
+
+const path = '/blog/';
+const title = 'Rental & Hauling Tips | The Boyz Rentals & Towing Blog';
+const description =
+  'Straight-talk guides on renting equipment and trailers in Denver and the Front Range — sizing, payload, towing rules, and digging Colorado soil.';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path },
+];
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.datePublished.localeCompare(a.data.datePublished),
+);
+const fmt = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const jsonLd = [breadcrumb(crumbs)];
+---
+<Base title={title} description={description} canonical={path} navActive={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Tips & guides"
+    h1="Rental & hauling, explained"
+    sub="Honest, useful guides from people who run this gear every day."
+    crumbs={crumbs}
+  />
+
+  <section class="sec"><div class="wrap">
+    <div class="cardgrid">
+      {posts.map((p) => (
+        <a class="lcard" href={`/blog/${p.id}/`}>
+          <div class="rvmeta" style="margin-bottom:8px">{fmt(p.data.datePublished)}</div>
+          <h2 class="lc-name">{p.data.title}</h2>
+          <p class="lc-desc">{p.data.excerpt}</p>
+          <span class="lc-go">Read more →</span>
+        </a>
+      ))}
+    </div>
+  </div></section>
+
+  <CtaSpine heading="Know what you need? Let's go." />
+</Base>

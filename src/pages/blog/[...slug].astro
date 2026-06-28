@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSpine from '../../components/CtaSpine.astro';
+import { getCollection, render } from 'astro:content';
+import { site, abs } from '../../data/site';
+import { breadcrumb } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const path = `/blog/${post.id}/`;
+const title = `${post.data.title} | The Boyz Rentals & Towing`;
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+  { name: post.data.title, path },
+];
+const fmt = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const blogPosting = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.datePublished,
+  dateModified: post.data.dateModified ?? post.data.datePublished,
+  mainEntityOfPage: abs(path),
+  author: { '@type': 'Organization', name: site.name, url: abs('/') },
+  publisher: {
+    '@type': 'Organization',
+    name: site.name,
+    logo: { '@type': 'ImageObject', url: abs('/assets/tbz-logo.webp') },
+  },
+};
+const jsonLd = [blogPosting, breadcrumb(crumbs)];
+---
+<Base title={title} description={post.data.description} canonical={path} navActive="/blog/" jsonLd={jsonLd}>
+  <PageHero eyebrow="The Boyz Blog" h1={post.data.title} crumbs={crumbs} />
+
+  <section class="sec"><div class="wrap">
+    <article class="article">
+      <p class="byline">By {site.name} · {fmt(post.data.datePublished)}</p>
+      <Content />
+    </article>
+  </div></section>
+
+  <CtaSpine heading="Ready to get the gear?" />
+</Base>
