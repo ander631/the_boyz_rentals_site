@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaSpine from '../components/CtaSpine.astro';
+import ReviewsWidget from '../components/ReviewsWidget.astro';
+import { site } from '../data/site';
+import { attributedReviews } from '../data/reviews';
+import { localBusiness, breadcrumb } from '../lib/schema';
+
+const path = '/reviews/';
+const title = `Reviews | The Boyz Rentals & Towing — ${site.reviews.rating}★ in Denver, CO`;
+const description = `Read what Front Range customers say about The Boyz Rentals & Towing — rated ${site.reviews.rating} stars across ${site.reviews.count} Google reviews. Firefighter owned, honest pricing.`;
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Reviews', path },
+];
+
+// localBusiness() carries the REAL aggregateRating (5.0/86). Only emit
+// Review schema if real attributed reviews exist (currently none).
+const reviewNodes = attributedReviews.map((r) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Review',
+  itemReviewed: { '@id': site.url + '/#business' },
+  author: { '@type': 'Person', name: r.author },
+  reviewRating: { '@type': 'Rating', ratingValue: String(r.rating), bestRating: '5' },
+  datePublished: r.datePublished,
+  reviewBody: r.body,
+}));
+const jsonLd = [localBusiness(), breadcrumb(crumbs), ...reviewNodes];
+---
+<Base title={title} description={description} canonical={path} navActive={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="What our customers say"
+    h1="Reviews from across the Front Range"
+    sub={`Rated ${site.reviews.rating} stars across ${site.reviews.count} Google reviews.`}
+    crumbs={crumbs}
+  />
+
+  <section class="sec"><div class="wrap">
+    <div class="rvhead">
+      <div>
+        <div class="kick">Aggregate rating</div>
+        <h2 class="h2">{site.reviews.rating} out of 5.0</h2>
+      </div>
+      <div class="gpill">
+        <span class="gbadge">G</span>
+        <div>
+          <div class="fx ac gap8"><span class="os" style="font-size:22px;font-weight:700;line-height:1">{site.reviews.rating}</span><span class="stars" style="font-size:17px" aria-hidden="true">★★★★★</span></div>
+          <div class="rvmeta">{site.reviews.count} Google reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <ReviewsWidget />
+
+    <div class="fx ac gap14 fwrap" style="margin-top:26px">
+      <a class="btn btn-red" href={site.booking}>Book Your Rental →</a>
+    </div>
+  </div></section>
+
+  <CtaSpine heading="Join our happy customers." />
+</Base>

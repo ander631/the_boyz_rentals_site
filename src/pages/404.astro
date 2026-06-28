@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+import { categories } from '../data/equipment';
+---
+<Base
+  title="Page Not Found | The Boyz Rentals & Towing"
+  description="That page couldn't be found. Browse our trailer and equipment rentals or call The Boyz Rentals & Towing."
+  canonical="/404/"
+  noindex={true}
+>
+  <PageHero eyebrow="Error 404" h1="We couldn't find that page" sub="But we can probably find what you need." />
+  <section class="sec"><div class="wrap prose">
+    <p class="seop">The page you were looking for moved or never existed. Here's where to go:</p>
+    <ul class="featlist">
+      <li><span class="cross mk" aria-hidden="true"></span><span><a href="/">Home</a></span></li>
+      {categories.map((c) => (
+        <li><span class="cross mk" aria-hidden="true"></span><span><a href={`/${c.slug}/`}>{c.name}</a></span></li>
+      ))}
+      <li><span class="cross mk" aria-hidden="true"></span><span><a href="/hauling-and-delivery/">Hauling &amp; Delivery</a></span></li>
+      <li><span class="cross mk" aria-hidden="true"></span><span><a href="/contact/">Contact us</a></span></li>
+    </ul>
+    <div class="fx ac gap14 fwrap" style="margin-top:24px">
+      <a class="btn btn-red btn-lg" href={site.booking}>See Rentals & Pricing →</a>
+      <a class="btn btn-ghost btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+    </div>
+  </div></section>
+</Base>

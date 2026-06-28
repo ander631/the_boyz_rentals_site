@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaSpine from '../components/CtaSpine.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import { site } from '../data/site';
+import { localBusiness, breadcrumb } from '../lib/schema';
+
+const path = '/contact/';
+const title = 'Contact The Boyz Rentals & Towing | Wheat Ridge & Denver, CO';
+const description = `Contact The Boyz Rentals & Towing in Wheat Ridge, CO. Call ${site.phone}, email ${site.email}, or reserve online. ${site.hoursText}. Serving the Denver metro.`;
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Contact', path },
+];
+const jsonLd = [localBusiness(), breadcrumb(crumbs)];
+---
+<Base title={title} description={description} canonical={path} navActive={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Get in touch"
+    h1="Contact The Boyz"
+    sub="Call, email, or reserve online — we pick up the phone."
+    crumbs={crumbs}
+  />
+
+  <section class="sec"><div class="wrap">
+    <div class="grid" style="grid-template-columns:1fr 1.1fr;gap:48px;align-items:start">
+
+      <div class="prose">
+        <h2 class="seoh3" style="margin-top:0">Reach us</h2>
+        <p class="seop" style="margin-bottom:6px"><b>Phone:</b> <a href={site.phoneHref}>{site.phone}</a></p>
+        <p class="seop" style="margin-bottom:6px"><b>Email:</b> <a href={`mailto:${site.email}`}>{site.email}</a></p>
+        <p class="seop" style="margin-bottom:6px"><b>Address:</b> {site.address.street}, {site.address.city}, {site.address.region} {site.address.postal}</p>
+        <p class="seop" style="margin-bottom:6px"><b>Hours:</b> {site.hoursText}</p>
+        <p class="seop"><b>Service area:</b> Denver and roughly a 40-mile radius across the Front Range.</p>
+
+        <div class="fx ac gap14 fwrap" style="margin-top:22px">
+          <a class="btn btn-red btn-lg" href={site.booking}>Reserve Online →</a>
+          <a class="btn btn-ghost btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+        </div>
+
+        <div style="margin-top:30px">
+          <MapEmbed label={`${site.address.city}, CO`} />
+        </div>
+      </div>
+
+      <div>
+        <h2 class="seoh3" style="margin-top:0">Send a message</h2>
+        {/* TODO(owner, Section 9/13 #8): confirm host. Wired for Netlify Forms.
+            If not on Netlify, set action= to your Formspree endpoint and remove
+            data-netlify. Submissions should route to morgan@tbzrentals.com. */}
+        <form name="contact" method="POST" data-netlify="true" action="/contact/?sent=1" class="contactform">
+          <input type="hidden" name="form-name" value="contact" />
+          <div class="formrow">
+            <label for="c-name">Name</label>
+            <input id="c-name" name="name" type="text" required autocomplete="name" />
+          </div>
+          <div class="formrow">
+            <label for="c-email">Email</label>
+            <input id="c-email" name="email" type="email" required autocomplete="email" />
+          </div>
+          <div class="formrow">
+            <label for="c-phone">Phone</label>
+            <input id="c-phone" name="phone" type="tel" autocomplete="tel" />
+          </div>
+          <div class="formrow">
+            <label for="c-msg">What do you need?</label>
+            <textarea id="c-msg" name="message" rows="5" placeholder="Equipment, dates, and your city — and we'll get right back to you."></textarea>
+          </div>
+          <button class="btn btn-red btn-lg w100 jc" type="submit">Send Message →</button>
+          <p class="rvmeta" style="margin-top:12px;font-size:13px">Prefer to talk? Call <a href={site.phoneHref} style="color:var(--red);font-weight:700;text-decoration:none">{site.phone}</a>.</p>
+        </form>
+      </div>
+    </div>
+  </div></section>
+
+  <CtaSpine heading="You call, we haul." callPrimary={true} primaryLabel="See Rentals & Pricing" />
+</Base>

@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import TrustBlock from '../components/TrustBlock.astro';
+import CtaSpine from '../components/CtaSpine.astro';
+import { site, differentiators, abs } from '../data/site';
+import { breadcrumb } from '../lib/schema';
+
+const path = '/about/';
+const title = 'About The Boyz Rentals & Towing | Firefighter Owned, Denver CO';
+const description =
+  'Meet Morgan — the firefighter who started The Boyz Rentals & Towing with three firefighter friends to put a newer, better-equipped fleet to work for the Front Range.';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'About', path },
+];
+
+// E-E-A-T: name the real founder. AboutPage points at the canonical business
+// entity and adds its founder. No invented dates/titles beyond what's true.
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  mainEntity: {
+    '@type': 'LocalBusiness',
+    '@id': abs('/#business'),
+    name: site.name,
+    founder: { '@type': 'Person', name: 'Morgan', jobTitle: 'Owner & Founder' },
+  },
+};
+const jsonLd = [aboutSchema, breadcrumb(crumbs)];
+---
+<Base title={title} description={description} canonical={path} navActive={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Firefighter Owned & Operated"
+    h1="About The Boyz Rentals & Towing"
+    sub="We aren't in this to get rich. We're in this to serve you."
+    crumbs={crumbs}
+  >
+    <div slot="cta" class="fx ac gap14 fwrap" style="margin-top:26px">
+      <a class="btn btn-red btn-lg" href={site.booking}>See Inventory & Pricing →</a>
+      <a class="btn btn-ghost btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+    </div>
+  </PageHero>
+
+  <section class="sec"><div class="wrap prose">
+    <h2 class="seoh3" style="margin-top:0">Meet Morgan — owner, founder, firefighter</h2>
+    <p class="seop">
+      The Boyz Rentals &amp; Towing started with a frustration. <b>Morgan</b> kept seeing the
+      tired, worn-out equipment businesses were putting in their fleets and renting out to
+      customers — and he knew it could be done better. So he went and did it himself: a rental
+      company built on newer, well-maintained machines and the kind of straight, honest service
+      he'd want as a customer.
+    </p>
+    <p class="seop">
+      He didn't do it alone. Morgan founded the company with <b>three firefighter friends</b>, and
+      it's firefighter owned and operated through and through. The same crew that shows up for the
+      community on the worst day shows up for you when you need a trailer or a machine.
+    </p>
+    <p class="seop">
+      Morgan is hellbent on growing this business — honestly, about the only time he's <i>not</i>
+      working on it is when he's on his firefighter rotation in <b>Aurora</b>, where he runs
+      24 hours on, 48 hours off, seven days a week. The rest of the time, he's making sure your
+      rental goes right.
+    </p>
+
+    <h2 class="seoh3">New equipment, all the bells and whistles</h2>
+    <p class="seop">
+      That original frustration is still the standard. Morgan takes real pride in keeping the fleet
+      <b> new and loaded with all the bells and whistles</b> — the right attachments, the features
+      that make a job easier and safer, and machines that start and run like they should. When you
+      rent from The Boyz, you're not babying somebody's clapped-out loader. You're running good gear.
+    </p>
+
+    <h2 class="seoh3">Backed by local partners</h2>
+    <p class="seop">
+      We're plugged into the local equipment community, with working relationships with shops like
+      <b> LE Trailers</b> (owner Christian) and <b>Jayhawk Trailers</b> (owner Emma). Those
+      relationships are a big part of why so many local contractors won't rent their trailers and
+      equipment anywhere else — they know what they're getting, and they know who stands behind it.
+    </p>
+
+    <h2 class="seoh3">What we stand for</h2>
+    <ul class="featlist">
+      {differentiators.map((d) => (
+        <li><span class="cross mk" aria-hidden="true"></span><span><b>{d.title}.</b> {d.body}</span></li>
+      ))}
+    </ul>
+
+    <h2 class="seoh3">Where to find us</h2>
+    <p class="seop">
+      We're based at {site.address.street}, {site.address.city}, {site.address.region}{' '}
+      {site.address.postal}, and we deliver across Denver and roughly a 40-mile radius of the metro.
+      {site.hoursText}. Call <a href={site.phoneHref}>{site.phone}</a> or email{' '}
+      <a href={`mailto:${site.email}`}>{site.email}</a> &mdash; or{' '}
+      <a href={site.booking}>reserve online</a> anytime.
+    </p>
+  </div></section>
+
+  <section class="sec secpaper"><div class="wrap">
+    <TrustBlock />
+  </div></section>
+
+  <CtaSpine heading="Ready when you are." />
+</Base>

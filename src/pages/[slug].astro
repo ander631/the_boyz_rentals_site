@@ -1,0 +1,62 @@
+---
+/* Single collision-proof dispatcher for all flat root-level pages whose
+   URL shapes overlap (category hubs, equipment pages, city hubs, matrix).
+   getStaticPaths emits each slug exactly once with a `kind` discriminator,
+   so there is never routing ambiguity between e.g. /equipment-rental-denver/
+   (city hub) and /skid-steer-rental-denver/ (matrix). */
+import CategoryHub from '../components/templates/CategoryHub.astro';
+import EquipmentType from '../components/templates/EquipmentType.astro';
+import HaulingHub from '../components/templates/HaulingHub.astro';
+import CityHub from '../components/templates/CityHub.astro';
+import Matrix from '../components/templates/Matrix.astro';
+import { equipment, categories } from '../data/equipment';
+import { cities } from '../data/cities';
+
+export function getStaticPaths() {
+  const paths: { params: { slug: string }; props: Record<string, unknown> }[] = [];
+
+  // Category hubs (trailer-rental, equipment-rental)
+  for (const c of categories) {
+    paths.push({ params: { slug: c.slug }, props: { kind: 'category', categorySlug: c.slug } });
+  }
+  // Hauling hub
+  paths.push({ params: { slug: 'hauling-and-delivery' }, props: { kind: 'hauling' } });
+
+  // Equipment-type pages: /<equip>-rental/
+  for (const e of equipment) {
+    paths.push({ params: { slug: `${e.slug}-rental` }, props: { kind: 'equipment', equipSlug: e.slug } });
+  }
+
+  // City hubs: /equipment-rental-<city>/
+  for (const city of cities) {
+    paths.push({ params: { slug: `equipment-rental-${city.slug}` }, props: { kind: 'city', citySlug: city.slug } });
+  }
+
+  // Matrix: /<equip>-rental-<city>/  (6 × 8 = 48)
+  for (const e of equipment) {
+    for (const city of cities) {
+      paths.push({
+        params: { slug: `${e.slug}-rental-${city.slug}` },
+        props: { kind: 'matrix', equipSlug: e.slug, citySlug: city.slug },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { kind, categorySlug, equipSlug, citySlug } = Astro.props as {
+  kind: string;
+  categorySlug?: string;
+  equipSlug?: string;
+  citySlug?: string;
+};
+
+import { categoryBySlug, equipmentBySlug } from '../data/equipment';
+import { cityBySlug } from '../data/cities';
+---
+{kind === 'category' && <CategoryHub category={categoryBySlug[categorySlug!]} />}
+{kind === 'hauling' && <HaulingHub />}
+{kind === 'equipment' && <EquipmentType equipment={equipmentBySlug[equipSlug!]} />}
+{kind === 'city' && <CityHub city={cityBySlug[citySlug!]} />}
+{kind === 'matrix' && <Matrix equipment={equipmentBySlug[equipSlug!]} city={cityBySlug[citySlug!]} />}

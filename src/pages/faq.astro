@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Faq from '../components/Faq.astro';
+import CtaSpine from '../components/CtaSpine.astro';
+import { site } from '../data/site';
+import { breadcrumb, faqPage } from '../lib/schema';
+
+const path = '/faq/';
+const title = 'FAQ | The Boyz Rentals & Towing — Denver Equipment & Trailer Rental';
+const description =
+  'Answers on renting equipment and trailers in Denver & the Front Range — delivery, pricing, gate sizing, towing & CDL rules, payload, operating, and discounts.';
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'FAQ', path },
+];
+
+// 10 in-depth, site-wide FAQs. True/general; cost answers point to live POS.
+const faqs = [
+  {
+    q: 'What areas do you deliver and rent to?',
+    a: 'We serve Denver and roughly a 40-mile radius across the Front Range — Wheat Ridge (our home base), Arvada, Lakewood, Westminster, Thornton, Aurora, Centennial, Golden, Broomfield, Northglenn, Commerce City, Englewood, Littleton, Brighton, and the towns between them. We deliver trailers and equipment to your site and pick them back up. If you are near the metro and do not see your town, {{LINK:/contact/|just call us}} — we have probably got you.',
+  },
+  {
+    q: 'How do I book a rental?',
+    a: 'The fastest way is online: {{LINK:BOOKING|check live availability and pricing}} and reserve in about two minutes. Prefer a person? Call (303) 900-8228 and we will get you set up. We never lock you into a reservation on this site — every booking runs through our live platform so you see real availability.',
+  },
+  {
+    q: 'How much does it cost to rent?',
+    a: 'Rates depend on the machine or trailer, how long you keep it, any attachments, and how far we deliver. We keep pricing simple and honest — no games. {{LINK:BOOKING|See live pricing and availability}} or call (303) 900-8228 for a straight number.',
+  },
+  {
+    q: 'Do you deliver and pick up, or do I have to haul it myself?',
+    a: 'We deliver. Moving heavy gear is half the battle, so we bring the trailer or machine to your job site and come back to grab it when you are done — no need to own a truck big enough to tow a loaded machine. We also haul loads that have nothing to do with a rental; {{LINK:/hauling-and-delivery/|see hauling and delivery}}.',
+  },
+  {
+    q: 'Will the equipment fit through my gate?',
+    a: 'A compact, small-frame skid steer or a sub-compact mini excavator is about 36 inches wide and usually clears a standard 36-inch backyard gate with the gate fully open. Standard-frame machines run 60 inches or more and will not. Measure the actual clear opening — posts and latches included — before you book, and we will match a machine that fits.',
+  },
+  {
+    q: 'Do I need a license or experience to operate the equipment?',
+    a: 'No special license is required to rent and operate on your own property, and we walk you through safe operation at drop-off. Commercial job sites may require OSHA-aligned training through your employer. One must-do before any digging: call 811 (Colorado 811) to get utilities marked — it is free and required.',
+  },
+  {
+    q: 'Do I need a CDL to tow your trailers?',
+    a: 'For typical non-commercial use behind a properly rated pickup, generally no. Heavier or commercial combinations can cross into CDL territory in Colorado, and the exact weights and use decide it — so verify the current Colorado rules for your setup. We confirm the right hitch, ball, and brake controller at pickup so you leave legal and safe.',
+  },
+  {
+    q: 'How much can a dump trailer carry?',
+    a: 'Look at payload, not trailer length: payload is the trailer GVWR minus its empty weight. A common 7x14 dump trailer rated at 14,000 lb GVWR weighing around 4,400 lb empty carries roughly 9,000 to 9,600 lb. Dense material like wet dirt, gravel, or concrete hits that weight limit before the box looks full, so load to the weight, not the volume.',
+  },
+  {
+    q: 'What does my truck need to tow a loaded trailer?',
+    a: 'A correctly rated hitch and ball (commonly 2-5/16 inch on heavier trailers), a brake controller in the tow vehicle, and a truck with enough tow rating to cover the combined loaded weight. We spell out exactly what your truck needs at pickup. If you are not set up to tow, ask about delivery and we will bring it to you.',
+  },
+  {
+    q: 'Do you offer first responder, military, or business discounts?',
+    a: 'Yes. We are firefighter owned, and first responder, military, and business discounts are always available — just ask when you book or call (303) 900-8228. We are not in this to get rich; we are in this to serve you.',
+  },
+];
+
+const jsonLd = [faqPage(faqs), breadcrumb(crumbs)];
+---
+<Base title={title} description={description} canonical={path} navActive={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Answers"
+    h1="Frequently asked questions"
+    sub="Straight answers on renting equipment and trailers across Denver and the Front Range."
+    crumbs={crumbs}
+  />
+
+  <section class="sec"><div class="wrap">
+    <div class="fx ac gap14 fwrap" style="margin-bottom:34px">
+      <a class="btn btn-red btn-lg" href={site.booking}>See Availability & Pricing →</a>
+      <a class="btn btn-ghost btn-lg" href={site.phoneHref}>Call {site.phone}</a>
+    </div>
+    <Faq faqs={faqs} />
+  </div></section>
+
+  <CtaSpine heading="Still have a question?" sub="Call and talk to a real person — we pick up the phone." callPrimary={true} primaryLabel="See Rentals & Pricing" />
+</Base>
